@@ -12,7 +12,7 @@ If you want to interact with the contract, use the `SwarmCoordinatorProxy`.
    - genrl:
       - [SwarmCoordinatorProxy](https://gensyn-testnet.explorer.alchemy.com/address/0xFaD7C5e93f28257429569B854151A1B8DCD404c2)
       - [SwarmCoordinator Implementation](https://gensyn-testnet.explorer.alchemy.com/address/0x098c7854ecc527416b97eb25ed3f8b91604ed88a)
-   - genrl-september-2025:
+   - coder-swarm:
       - [SwarmCoordinatorProxy](https://gensyn-testnet.explorer.alchemy.com/address/0x7745a8FE4b8D2D2c3BB103F8dCae822746F35Da0)
       - [SwarmCoordinator Implementation](https://gensyn-testnet.explorer.alchemy.com/address/0xEA4F16eeC928f9D78Cca672137D352a45639180b)
 - v0.5.1
