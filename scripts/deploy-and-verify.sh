@@ -5,6 +5,35 @@ set -a
 source .env
 set +a
 
+# Function to deploy a new proxy with a new implementation
+new() {
+    # Run the deployment script and capture its output
+    echo "Deploying proxy..."
+    DEPLOY_OUTPUT=$(forge script script/DeploySwarmCoordinatorProxy.s.sol --slow \
+       --rpc-url=$ETH_RPC_URL \
+       --private-key=$ETH_PRIVATE_KEY \
+       --sig "run()" \
+       --no-cache \
+       --broadcast)
+
+    # Extract the implementation address using grep and sed
+    PROXY_ADDRESS=$(echo "$DEPLOY_OUTPUT" | grep "SwarmCoordinator proxy deployed at:" | sed -E 's/.*: (0x[a-fA-F0-9]+)/\1/')
+    IMPLEMENTATION_ADDRESS=$(echo "$DEPLOY_OUTPUT" | grep "SwarmCoordinator implementation deployed at:" | sed -E 's/.*: (0x[a-fA-F0-9]+)/\1/')
+
+    if [ -z "$PROXY_ADDRESS" ]; then
+        echo "Failed to extract implementation address from deployment output"
+        return 1
+    fi
+
+    if [ -z "$IMPLEMENTATION_ADDRESS" ]; then
+        echo "Failed to extract implementation address from deployment output"
+        return 1
+    fi
+
+    echo "Proxy address: $PROXY_ADDRESS"
+    echo "Implementation address: $IMPLEMENTATION_ADDRESS"
+}
+
 # Function to deploy contract for a given proxy address
 deploy() {
     local proxy_address=$1
@@ -73,11 +102,16 @@ show_usage() {
 }
 
 # Parse command line arguments
+NEW=false
 DEPLOY=true
 VERIFY=true
 
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --new)
+            NEW=true
+            shift
+            ;;
         --deploy-only)
             VERIFY=false
             shift
@@ -97,6 +131,16 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# We don't need the proxy addresses if deploying a new proxy.
+# Can verify seperately after.
+if [ "$NEW" = true ]; then
+    if ! new; then
+        echo "Failed to deploy new proxy"
+        exit 1
+    fi
+    exit 0
+fi
 
 # Read the proxy addresses array from environment
 # The format in .env should be: PROXY_ADDRESSES=("0x123..." "0x456...")
