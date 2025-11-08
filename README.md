@@ -363,4 +363,5 @@ forge coverage --report lcov ; genhtml lcov.info -o report
 Once that's done you can use either:
 
 - [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server)
+
 - [Coverage Gutters](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters)
